@@ -19,56 +19,60 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
-      class GuGuDan extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = {
-            first: Math.ceil(Math.random() * 9), // 숫자1
-            second: Math.ceil(Math.random() * 9), // 숫자2
-            value: "", // 입력창 값
-            result: "", // 결과값
-          };
-        }
+      const GuGuDan = () => {
+        const [first, setFirst] = React.useState(Math.ceil(Math.random() * 9));
+        const [second, setSecond] = React.useState(
+          Math.ceil(Math.random() * 9)
+        );
+        const [value, setValue] = React.useState("");
+        const [result, setResult] = React.useState("");
+        // 레퍼런스 초기값 지정 가능
+        // hooks 에서 레퍼런스(ref)는 useRef 로 돔에 접근 후 current 를 붙여준다.
+        const inputRef = React.useRef(null);
 
-        // form 에 들어갈 onSubmit 메서드
-        onSubmit = (e) => {
+        const onChangeInput = (e) => {
+          // value 전용 setState 를 이용
+          setValue(e.target.value);
+        };
+
+        const onSubmitForm = (e) => {
           e.preventDefault();
-          if (parseInt(this.state.value) === this.state.first * this.state.second) {
-            this.setState({
-              result: "정답",
-              first: Math.ceil(Math.random() * 9),
-              second: Math.ceil(Math.random() * 9),
-              value: "",
+          if (parseInt(value) === first * second) {
+            // 이전 state 를 쓸 때(value) Hooks 역시 함수형 setState 를 써주면 된다.
+            setResult((prevResult) => {
+              `${first} x ${second} = ${value} 정답! `
             });
+            // ex) 이전 값에 1을 더하는 경우
+            // setCount((c) => c +  1);
+            setFirst(Math.ceil(Math.random() * 9));
+            setSecond(Math.ceil(Math.random() * 9));
+            setValue("");
+            inputRef.current.focus();
           } else {
-            this.setState({
-              result: "땡",
-              value: "",
-            });
+            setResult("땡");
+            setValue("");
+            inputRef.current.focus();
           }
         };
 
-        onChange = (e) => this.setState({ value: e.target.value });
-
-        render() {
-          return (
+        return (
+          <React.Fragment>
             <div>
-              <div>
-                {this.state.first} 곱하기 {this.state.second} 는?
-              </div>
-              <form onSubmit={this.onSubmit}>
-                <input
-                  type="number"
-                  value={this.state.value}
-                  onChange={this.onChange}
-                />
-                <button>입력!</button>
-              </form>
-              <div>{this.state.result}</div>
+              {first} 곱하기 {second} 는?
             </div>
-          );
-        }
-      }
+            <form onSubmit={onSubmitForm}>
+              <input
+                ref={inputRef}
+                type="number"
+                value={value}
+                onChange={onChangeInput}
+              />
+              <button type="submit">입력</button>
+            </form>
+            <div>{result}</div>
+          </React.Fragment>
+        );
+      };
     </script>
     <script type="text/babel">
       ReactDOM.render(<GuGuDan />, document.querySelector("#root"));
@@ -76,4 +80,7 @@
   </body>
 </html>
 
-<!-- 구구단을 할 꺠  -->
+<!-- 웹팩을 쓰는 이유 -->
+<!-- 실제 개발시 컴포넌트가 하나로 이루어진 경우가 드물기 때문에 수십 수만개의 파일이 만들어지고, 그와 동시에 중복이 발생할 수 밖에 없다. 이때 여러 개의 자바스크립트 파일을 한 번에 합쳐 하나의 js 파일로 만들어준다. -->
+
+웹팩 설치
