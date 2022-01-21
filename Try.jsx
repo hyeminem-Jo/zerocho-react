@@ -1,18 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 
-class Try extends Component {
-  render() {
-    return (
-      <li>
-        <b>{this.props.item.fruit}</b> - {this.props.index}
-        {/* <b>{item.fruit}</b> - {i} */}
-        <div>컨텐츠 </div>
-        <div>컨텐츠 1</div>
-        <div>컨텐츠 2</div>
-        <div>컨텐츠 3</div>
-      </li>
-    );
-  }
-}
+// 다음에서 () 은 props 가 들어가는 자리다.
+// const Try = (props) => {
+// props (tryInfo) 역시 다음과 같이 구조분해해서 넣을 수 있다.
+// class 에서: const {tryInfo} = this.props
+const Try = ({ tryInfo }) => {
+  return (
+    <li>
+      <div>{tryInfo.try}</div>
+      <div>{tryInfo.result}</div>
+    </li>
+  )
+};
 
 export default Try;
